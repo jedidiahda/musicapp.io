@@ -15,29 +15,29 @@ let songs = [
   },
   {
     id: 3,
-    title: 'Peaches',
-    artist: 'Justin Bieber ft. Daniel Caesar, Giveon',
+    title: 'Out of Time',
+    artist: 'The Weeknd',
     releaseDate: new Date(2021, 2, 18), //March 19 2021
     timeSpan: '03:18',
   },
   {
     id: 4,
-    title: 'Peaches',
-    artist: 'Justin Bieber ft. Daniel Caesar, Giveon',
+    title: 'Close',
+    artist: 'Nick Jonas ft. Tove Lo',
     releaseDate: new Date(2021, 2, 18), //March 19 2021
     timeSpan: '03:18',
   },
   {
     id: 5,
-    title: 'Peaches',
-    artist: 'Justin Bieber ft. Daniel Caesar, Giveon',
+    title: 'Bad Things',
+    artist: 'Camila Cabello',
     releaseDate: new Date(2021, 2, 18), //March 19 2021
     timeSpan: '03:18',
   },
   {
     id: 6,
-    title: 'Peaches',
-    artist: 'Justin Bieber ft. Daniel Caesar, Giveon',
+    title: 'Kill Em With Kindness',
+    artist: 'Selena Gomez',
     releaseDate: new Date(2021, 2, 18), //March 19 2021
     timeSpan: '03:18',
   },
@@ -49,14 +49,25 @@ class Song {
   }
 
   static getUserPLaylist(playlist){
-    if (playlist && playlist.length > 0) {
-      return songs.filter(function (s) { return this == s.id;}, playlist);
+    console.log('playlist song', playlist)
+    let list = [];
+    for(let i= 0; i < songs.length;i++){
+      for(let j=0;j<playlist.length;j++){
+        if(songs[i].id == playlist[j]){
+          list.push(songs[i]);
+        }
+      }
     }
-    return [];
+    // return songs.filter(function (s) { return this == s.id;}, playlist);
+    return list;
   }
 
   static getSong(playlistId){
     return songs.find(s => s.id == playlistId);
+  }
+
+  static search(title){
+    return songs.filter(s => s.title.toLowerCase().includes(title.toLowerCase()));
   }
 }
 

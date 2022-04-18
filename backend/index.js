@@ -1,17 +1,19 @@
 const express = require('express');
 const cors = require('cors');
 // const session = require('express-session');
-// require('express-async-errors');
+require('express-async-errors');
 
 const userRouter = require('./routes/userRoute');
 const songRouter = require('./routes/songRoute');
 const playlistRouter = require('./routes/playlistRoute');
 const CustomError = require('./errors/custom-error');
+// const currentUser = require('./middleware/current-user');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
+// app.use(currentUser);
 app.use(userRouter);
 app.use(songRouter);
 app.use(playlistRouter);

@@ -1,10 +1,13 @@
-const express = require('express');
-const NotFoundError = require('../errors/not-found-error');
+const User = require('../models/user');
 
-module.exports.currentUser = (req,res,next) => {
-  if(!req.body.userSession){
-    throw new NotFoundError();
+currentUser = (req,res,next) => {
+  const token = req.query.token ? req.query.token : req.body.token;
+  const userToken = token && token.split(',')[0];
+  if(!User.getUser(userToken)){
+    throw new Error('Invalid credential');
   }
 
   next();
 }
+
+module.exports = currentUser;

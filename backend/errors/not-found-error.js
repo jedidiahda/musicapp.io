@@ -4,7 +4,7 @@ class NotFoundError extends CustomError {
   constructor() {
     super('Not found');
   }
-  static getCode() {
+  getCode() {
     return 404;
   }
 }

@@ -12,25 +12,33 @@ class Paylist {
   }
 
   static getAll(username) {
+    console.log(playlists)
     return playlists.filter((p) => p.username == username);
   }
 
   add() {
-    let list = playlists.find((p) => p.username == this.username);
-    if (list) {
-      let pl = list.list.find((p) => p == this.songId);
+    let user = playlists.filter((p) => p.username == this.username)[0];
+    if (user) {
+      let pl = user.list.find((p) => p == this.songId);
       if (!pl) {
-        list.list.push(this.songId);
+        user.list.push(this.songId);
       }
       return this;
+    }else{
+      playlists.push({
+        username: this.username,
+        list:[this.songId]
+      });
     }
-    return null;
+    return this;
   }
 
   static remove(username, songId) {
-    let pl = playlists.find((p) => p.username == username);
-    if (pl) {
-      pl.list = pl.list.filter((p) => p.songId != songId);
+    console.log("remove",playlists);
+    let user = playlists.filter(p => p.username == username)[0];
+    if (user) {
+      // console.log(user);
+      user.list = user.list.filter(p => p != songId);
     }
   }
 }

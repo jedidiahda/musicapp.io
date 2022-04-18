@@ -6,24 +6,33 @@ let index = 1;
 window.onload = function () {
   console.log('window.onload');
 
+  playlist = [];
+  songs = [];
+  index = 1;
+
   const usersession = sessionStorage.getItem('userSession');
   const login = document.getElementById('login');
   const btnLogout = document.getElementById('btnLogout');
   const landingPage = document.getElementById('landing-page');
   const songContent = document.getElementById('song-content');
+  const search = document.getElementById('search');
+
+  clearHTMLContent();
+
+  console.log(usersession);
 
   if (!usersession) {
     btnLogout.style.display = 'none';
     login.style.display = 'block';
     songContent.style.display = 'none';
     landingPage.style.display = 'block';
-    showSongs();
-    getPlaylist();
+    search.style.display = 'none';
   } else {
     login.style.display = 'none';
     btnLogout.style.display = 'block';
     songContent.style.display = 'block';
     landingPage.style.display = 'none';
+    search.style.display = 'flex';
     document.getElementById('hhUsername').value = usersession.split(',')[0];
     showSongs();
     getPlaylist();
@@ -31,7 +40,12 @@ window.onload = function () {
 
   document.getElementById('btnLogin').onclick = onLogin;
   btnLogout.onclick = onLogout;
-  document.getElementById('btnSearch').onclick= onSearch;
+  document.getElementById('btnSearch').onclick = onSearch;
+};
+
+clearHTMLContent = () => {
+  document.getElementById('playlistContent').innerHTML = '';
+  document.getElementById('songContent').innerHTML = '';
 };
 
 onLogin = async (e) => {
@@ -82,10 +96,18 @@ onLogin = async (e) => {
 
 showSongs = async () => {
   console.log('show songs');
-  songs = await fetch(`${baseUrl}/songs`).then((res) => res.json());
-
-  renderSongElement();
-
+  let userSession = sessionStorage.getItem('userSession'); // == null ? '' : sessionStorage.getItem('userSession');
+  let res = await fetch(`${baseUrl}/songs?token=${userSession}`).then((res) =>
+    res.json()
+  );
+  // console.log(res)
+  if (res.errors) {
+    songs = [];
+    // window.onload();
+  } else {
+    songs = res;
+    renderSongElement();
+  }
 };
 
 renderSongElement = () => {
@@ -115,7 +137,7 @@ renderSongElement = () => {
   `;
 
   document.getElementById('songContent').innerHTML = table;
-}
+};
 
 async function addPlaylist(id) {
   if (playlist.findIndex((s) => s.id == id) > -1) {
@@ -130,6 +152,7 @@ async function addPlaylist(id) {
     body: JSON.stringify({
       songId: id,
       username: document.getElementById('hhUsername').value,
+      token: sessionStorage.getItem('userSession'),
     }),
   }).then((res) => res.json());
 
@@ -146,32 +169,38 @@ async function addPlaylist(id) {
 
 getPlaylist = async () => {
   let username = document.getElementById('hhUsername').value;
-  let list = await fetch(`${baseUrl}/playlists/${username}`).then((res) =>
-    res.json()
-  );
-
-  list.forEach((a) => {
-    playlist.push({
-      index: index++,
-      id: a.id,
-      title: a.title,
+  let userSession = sessionStorage.getItem('userSession');
+  let res = await fetch(
+    `${baseUrl}/playlists?username=${username}&token=${userSession}`
+  ).then((res) => res.json());
+  // console.log(res)
+  if (res.errors) {
+    playlist = [];
+    // window.onload();
+  } else {
+    res.forEach((a) => {
+      playlist.push({
+        index: index++,
+        id: a.id,
+        title: a.title,
+      });
     });
-  });
 
-  showPlaylistHeader();
+    showPlaylistHeader();
+  }
 };
 
-showPlaylistHeader = ()=>{
+showPlaylistHeader = () => {
   if (playlist.length > 0) {
     document.getElementById('playlist-header').innerHTML = 'Your Playlist';
     showPlaylistElement(playlist);
-    
   } else {
-    document.getElementById('playlist-header').innerHTML = 'No song in your playist';
+    document.getElementById('playlist-header').innerHTML =
+      'No song in your playist';
     document.getElementById('playlistContent').innerHTML = '';
     index = 1;
   }
-}
+};
 
 showPlaylistElement = (playlist) => {
   console.log('show playlist');
@@ -198,7 +227,7 @@ showPlaylistElement = (playlist) => {
         ${tr}
       </tbody>
   `;
-  
+
   document.getElementById('playlistContent').innerHTML = table;
 };
 
@@ -211,18 +240,19 @@ removePlaylist = async (id) => {
     body: JSON.stringify({
       songId: id,
       username: document.getElementById('hhUsername').value,
+      token: sessionStorage.getItem('userSession'),
     }),
-  })//.then((res) => res.json());
+  }); //.then((res) => res.json());
   console.log(res.status);
 
-  if(res.status == 200){
-    playlist = playlist.filter(p => p.id != id);
+  if (res.status == 200) {
+    playlist = playlist.filter((p) => p.id != id);
     showPlaylistElement(playlist);
+    // getPlaylist();
   }
 
   showPlaylistHeader();
-
-}
+};
 
 onLogout = (e) => {
   console.log('on logout');
@@ -237,8 +267,11 @@ removeErrorElement = () => {
   }
 };
 
-onSearch = (e) => {
+onSearch = async (e) => {
   let title = document.getElementById('txtSearch').value;
-  songs = songs.filter(s => s.title.toLowerCase().includes(title.toLowerCase()));
+  let userSession = sessionStorage.getItem('userSession');
+  let res = await fetch(`${baseUrl}/songs/search?title=${title}&token=${userSession}`).then((res) => res.json());
+  songs = res;
+  document.getElementById('songHeader').innerHTML=`Results of '${title}'`;
   renderSongElement();
-}
+};
