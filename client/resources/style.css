@@ -1,0 +1,114 @@
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-weight: normal;
+  font-style: normal;
+  text-shadow: none;
+  margin: 0;
+}
+
+.header{
+  overflow: hidden;
+  background-image: url('./images/starfield-2276843.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  color: navajowhite;
+  height: 60px;
+
+}
+
+.text-header{
+  font-weight: bolder;
+  font-size: x-large;
+}
+
+.logo{
+  float: left;
+  text-align: center;
+  padding: 12px;
+  text-decoration: none;
+  color:#fa91d7;
+  font-weight: 500;
+  font-size: x-large;
+ }
+
+.login, #btnLogout{
+  display: none;
+}
+
+.login, #btnLogout, #search{
+  float: right;
+}
+
+.login > ul{
+  display: flex;
+}
+
+.login li{
+  list-style-type: none;
+  padding-left: 5px;
+}
+
+#btnLogout{
+  margin-top: 0.19em;
+}
+
+#search{
+  display: flex;
+  padding:15px;
+  height: 25px;
+}
+
+#search div{
+  display: inherit;
+  margin-right: 40px;
+}
+
+#search label{
+  margin-right: 3px;
+}
+#search a{
+  padding: 5px;
+}
+
+.content{
+  width: 800px;
+  margin: auto;
+}
+
+.error{
+  color: red;
+}
+
+table{
+  width: 700px;
+  border-spacing: 0;
+  border-collapse: collapse;
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+th{
+  background-color: #ddd;
+}
+td,th {
+  border: 1px solid #ddd;
+  
+  padding: 2px;
+}
+
+td{
+  text-align: center;
+}
+
+.text-left{
+  text-align: left !important; 
+ }
+
+.left{
+  float: left;
+}
+
+.right{
+  float: right;
+}
