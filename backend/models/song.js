@@ -15,25 +15,25 @@ let songs = [
     id: 3,
     title: 'Out of Time',
     artist: 'The Weeknd',
-    releaseDate: new Date(2021, 2, 18), //March 19 2021
+    releaseDate: new Date(2022, 4, 18), 
   },
   {
     id: 4,
     title: 'Close',
     artist: 'Nick Jonas ft. Tove Lo',
-    releaseDate: new Date(2021, 2, 18), //March 19 2021
+    releaseDate: new Date(2021, 2, 28), 
   },
   {
     id: 5,
     title: 'Bad Things',
     artist: 'Camila Cabello',
-    releaseDate: new Date(2021, 2, 18), //March 19 2021
+    releaseDate: new Date(2020, 0, 30), 
   },
   {
     id: 6,
     title: 'Kill Em With Kindness',
     artist: 'Selena Gomez',
-    releaseDate: new Date(2021, 2, 18), //March 19 2021
+    releaseDate: new Date(2020, 7, 01), 
   },
 ];
 

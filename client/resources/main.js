@@ -8,10 +8,9 @@ let musicOption = {
   repeatAll: false,
   repeatOne: false,
 };
+let audioIndex = 0;
 
 window.onload = function () {
-  console.log('window.onload');
-
   playlist = [];
   songs = [];
   index = 1;
@@ -34,25 +33,22 @@ window.onload = function () {
   const btnPause = document.querySelector('.fa-regular.fa-circle-pause');
   btnPause.style.display = 'none';
   document.querySelector('audio').currentTime = 0;
-  document.querySelector('.fa-solid.fa-arrow-rotate-right').style.display =
-    'none';
+  document.querySelector('.fa-solid.fa-arrow-rotate-right').style.display ='none';
 
   clearHTMLContent();
-
+  footer.style.visibility = 'hidden';
   if (!usersession) {
     btnLogout.style.display = 'none';
     login.style.display = 'block';
     songContent.style.display = 'none';
     landingPage.style.display = 'block';
     search.style.visibility = 'hidden';
-    footer.style.visibility = 'hidden';
   } else {
     login.style.display = 'none';
     btnLogout.style.display = 'block';
     songContent.style.display = 'block';
     landingPage.style.display = 'none';
     search.style.visibility = 'visible';
-    footer.style.visibility = 'visible';
     document.getElementById('hhUsername').value = usersession.split(',')[0];
     showSongs();
     getPlaylist();
@@ -61,22 +57,20 @@ window.onload = function () {
   document.getElementById('btnLogin').onclick = onLogin;
   btnLogout.onclick = onLogout;
   document.getElementById('btnSearch').onclick = onSearch;
-  document.querySelector('#footerAudio .fa-regular.fa-circle-play').onclick =
-    playMusic;
+  document.querySelector('#footerAudio .fa-regular.fa-circle-play').onclick = playMusic;
   btnPause.onclick = pauseMusic;
   document.querySelector('.fa-regular.fa-circle-right').onclick = nextMusic;
   document.querySelector('.fa-regular.fa-circle-left').onclick = previousMusic;
   document.querySelector('.fa-solid.fa-shuffle').onclick = shuffleMusic;
   document.querySelector('.fa-solid.fa-repeat').onclick = repeatAllMusic;
-  document.querySelector('.fa-solid.fa-arrow-rotate-right').onclick =
-    repeatOneMusic;
+  document.querySelector('.fa-solid.fa-arrow-rotate-right').onclick = repeatOneMusic;
 
   //fix audio duration inifite
   //https://www.thecodehubs.com/infinity-audio-video-duration-issue-fixed-using-javascript/
-  //We can use the duration property to get the length of the current Audio/Video in seconds. 
-  //Unfortunately, with some Audio/Video we will see the duration as Infinity. 
-  //A chrome bug that causes the duration not to be available under certain circumstances. 
-  //The issue is in WebKit browsers, the metadata is loaded after the Audio/Video. 
+  //We can use the duration property to get the length of the current Audio/Video in seconds.
+  //Unfortunately, with some Audio/Video we will see the duration as Infinity.
+  //A chrome bug that causes the duration not to be available under certain circumstances.
+  //The issue is in WebKit browsers, the metadata is loaded after the Audio/Video.
   //So the duration is not available when the JS runs.
   document
     .querySelector('audio')
@@ -100,9 +94,6 @@ clearHTMLContent = () => {
 };
 
 onLogin = async (e) => {
-  // e.preventDefault();
-  console.log('on login');
-
   removeErrorElement();
 
   const txtUsername = document.getElementById('txtUsername');
@@ -213,7 +204,9 @@ async function addPlaylist(id) {
     index: index++,
     id: newPlaylist.id,
     title: newPlaylist.title,
-    src: `http://localhost:3000/songs/mp3?id=${newPlaylist.id}&token=${sessionStorage.getItem('userSession')}`,
+    src: `http://localhost:3000/songs/mp3?id=${
+      newPlaylist.id
+    }&token=${sessionStorage.getItem('userSession')}`,
   });
 
   showPlaylistHeader();
@@ -236,7 +229,9 @@ getPlaylist = async () => {
         id: a.id,
         title: a.title,
         // src: `./audio/${a.id}.mp3`,
-        src: `http://localhost:3000/songs/mp3?id=${a.id}&token=${sessionStorage.getItem('userSession')}`,
+        src: `http://localhost:3000/songs/mp3?id=${
+          a.id
+        }&token=${sessionStorage.getItem('userSession')}`,
       });
     });
 
@@ -330,17 +325,27 @@ onSearch = async (e) => {
     `${baseUrl}/songs/search?title=${title}&token=${userSession}`
   ).then((res) => res.json());
   songs = res;
-  document.getElementById('songHeader').innerHTML = `Results of '${title}'`;
+  if (title != '') {
+    document.getElementById('songHeader').innerHTML = `Results of '${title}'`;
+  } else {
+    document.getElementById('songHeader').innerHTML = 'Songs you may interest';
+  }
   renderSongElement();
 };
 
-// onclick="playMusic()"
 
-var audioIndex = 0;
 function playMusic() {
   let player = document.querySelector('audio');
   let startTime = document.getElementById('startTime');
   let endTime = document.getElementById('endTime');
+
+  document.querySelector('.footer').style.visibility = 'visible';
+
+  //exit interval if duration is NaN
+  if(isNaN(player.duration)){
+    return;
+  } 
+
   if (currentPlay < playlist.length) {
     if (player.currentTime > 0) {
       player.play();
@@ -348,13 +353,12 @@ function playMusic() {
       player.src = playlist[currentPlay].src;
       player.play();
     }
-    document.getElementById('songTitle').innerHTML =
-      playlist[currentPlay].title;
+    
+    document.getElementById('songTitle').innerHTML = playlist[currentPlay].title;
     document.querySelector(
       '#footerAudio .fa-regular.fa-circle-play'
     ).style.display = 'none';
-    document.querySelector('.fa-regular.fa-circle-pause').style.display =
-      'block';
+    document.querySelector('.fa-regular.fa-circle-pause').style.display = 'block';
 
     if (audioIndex == 0) {
       audioIndex = 1;
@@ -388,7 +392,7 @@ function playMusic() {
 
           startTime.innerHTML = h + ':' + m + ':' + s;
 
-          let es = parseInt(player.duration % 60);
+          let es = Math.floor(player.duration % 60);
           let em = parseInt((player.duration / 60) % 60);
           let eh = parseInt((player.duration / 60 / 60) % 60);
 
@@ -401,7 +405,7 @@ function playMusic() {
   }
 }
 
-function playSelectedMusic(selectedIndex) {
+playSelectedMusic = (selectedIndex) => {
   currentPlay = selectedIndex;
   document.querySelector('audio').currentTime = 0;
   playMusic();
@@ -416,25 +420,25 @@ function pauseMusic() {
   ).style.display = 'block';
 }
 
-function nextMusic() {
+nextMusic = () => {
   console.log('nextmusic');
   if (currentPlay >= playlist.length - 1) currentPlay = -1;
 
   currentPlay = currentPlay + 1;
   document.querySelector('audio').currentTime = 0;
   playMusic();
-}
+};
 
-function previousMusic() {
+previousMusic = () => {
   console.log('previousmusic');
   //2,1,0
   currentPlay = currentPlay - 1;
   if (currentPlay == -1) currentPlay = playlist.length - 1;
   document.querySelector('audio').currentTime = 0;
   playMusic();
-}
+};
 
-async function shuffleMusic() {
+shuffleMusic = async () => {
   musicOption.shuffle = !musicOption.shuffle;
   console.log(musicOption.shuffle);
   if (musicOption.shuffle == true) {
@@ -442,9 +446,9 @@ async function shuffleMusic() {
     showPlaylistHeader();
     musicOption.shuffle = false;
   }
-}
+};
 
-function repeatAllMusic() {
+repeatAllMusic = () => {
   musicOption.repeatAll = !musicOption.repeatAll;
 
   if (musicOption.repeatAll == false) {
@@ -453,9 +457,9 @@ function repeatAllMusic() {
       'inline-block';
     musicOption.repeatOne = true;
   }
-}
+};
 
-function repeatOneMusic() {
+repeatOneMusic = () => {
   musicOption.repeatOne = !musicOption.repeatOne;
 
   if (musicOption.repeatOne == false) {
@@ -465,9 +469,9 @@ function repeatOneMusic() {
       'none';
     musicOption.repeatAll = true;
   }
-}
+};
 
-function shufflePlaylist() {
+shufflePlaylist = () => {
   for (var i = playlist.length - 1; i > 0; i--) {
     // Generate random number
     var j = Math.floor(Math.random() * (i + 1));
@@ -476,4 +480,4 @@ function shufflePlaylist() {
     playlist[i] = playlist[j];
     playlist[j] = temp;
   }
-}
+};
