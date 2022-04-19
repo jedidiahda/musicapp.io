@@ -12,7 +12,7 @@ class Paylist {
   }
 
   static getAll(username) {
-    console.log(playlists)
+    // console.log(playlists)
     return playlists.filter((p) => p.username == username);
   }
 
@@ -34,7 +34,7 @@ class Paylist {
   }
 
   static remove(username, songId) {
-    console.log("remove",playlists);
+    // console.log("remove",playlists);
     let user = playlists.filter(p => p.username == username)[0];
     if (user) {
       // console.log(user);

@@ -2,6 +2,12 @@ const baseUrl = 'http://localhost:3000';
 let playlist = [];
 let songs = [];
 let index = 1;
+let currentPlay = 0;
+let musicOption = {
+  shuffle: false,
+  repeatAll: false,
+  repeatOne: false,
+};
 
 window.onload = function () {
   console.log('window.onload');
@@ -9,6 +15,12 @@ window.onload = function () {
   playlist = [];
   songs = [];
   index = 1;
+  currentPlay = 0;
+  musicOption = {
+    shuffle: false,
+    repeatAll: true,
+    repeatOne: false,
+  };
 
   const usersession = sessionStorage.getItem('userSession');
   const login = document.getElementById('login');
@@ -16,23 +28,31 @@ window.onload = function () {
   const landingPage = document.getElementById('landing-page');
   const songContent = document.getElementById('song-content');
   const search = document.getElementById('search');
+  const footer = document.querySelector('.footer');
+
+  //music
+  const btnPause = document.querySelector('.fa-regular.fa-circle-pause');
+  btnPause.style.display = 'none';
+  document.querySelector('audio').currentTime = 0;
+  document.querySelector('.fa-solid.fa-arrow-rotate-right').style.display =
+    'none';
 
   clearHTMLContent();
-
-  console.log(usersession);
 
   if (!usersession) {
     btnLogout.style.display = 'none';
     login.style.display = 'block';
     songContent.style.display = 'none';
     landingPage.style.display = 'block';
-    search.style.display = 'none';
+    search.style.visibility = 'hidden';
+    footer.style.visibility = 'hidden';
   } else {
     login.style.display = 'none';
     btnLogout.style.display = 'block';
     songContent.style.display = 'block';
     landingPage.style.display = 'none';
-    search.style.display = 'flex';
+    search.style.visibility = 'visible';
+    footer.style.visibility = 'visible';
     document.getElementById('hhUsername').value = usersession.split(',')[0];
     showSongs();
     getPlaylist();
@@ -41,6 +61,37 @@ window.onload = function () {
   document.getElementById('btnLogin').onclick = onLogin;
   btnLogout.onclick = onLogout;
   document.getElementById('btnSearch').onclick = onSearch;
+  document.querySelector('#footerAudio .fa-regular.fa-circle-play').onclick =
+    playMusic;
+  btnPause.onclick = pauseMusic;
+  document.querySelector('.fa-regular.fa-circle-right').onclick = nextMusic;
+  document.querySelector('.fa-regular.fa-circle-left').onclick = previousMusic;
+  document.querySelector('.fa-solid.fa-shuffle').onclick = shuffleMusic;
+  document.querySelector('.fa-solid.fa-repeat').onclick = repeatAllMusic;
+  document.querySelector('.fa-solid.fa-arrow-rotate-right').onclick =
+    repeatOneMusic;
+
+  //fix audio duration inifite
+  //https://www.thecodehubs.com/infinity-audio-video-duration-issue-fixed-using-javascript/
+  //We can use the duration property to get the length of the current Audio/Video in seconds. 
+  //Unfortunately, with some Audio/Video we will see the duration as Infinity. 
+  //A chrome bug that causes the duration not to be available under certain circumstances. 
+  //The issue is in WebKit browsers, the metadata is loaded after the Audio/Video. 
+  //So the duration is not available when the JS runs.
+  document
+    .querySelector('audio')
+    .addEventListener('loadedmetadata', function () {
+      if (this.duration == Infinity) {
+        this.currentTime = 1e101;
+        this.ontimeupdate = function () {
+          this.ontimeupdate = () => {
+            return;
+          };
+          this.currentTime = 0;
+          return;
+        };
+      }
+    });
 };
 
 clearHTMLContent = () => {
@@ -156,12 +207,13 @@ async function addPlaylist(id) {
     }),
   }).then((res) => res.json());
 
-  console.log(newPlaylist);
+  // console.log(newPlaylist);
 
   playlist.push({
     index: index++,
     id: newPlaylist.id,
     title: newPlaylist.title,
+    src: `http://localhost:3000/songs/mp3?id=${newPlaylist.id}`,
   });
 
   showPlaylistHeader();
@@ -183,6 +235,8 @@ getPlaylist = async () => {
         index: index++,
         id: a.id,
         title: a.title,
+        // src: `./audio/${a.id}.mp3`,
+        src: `http://localhost:3000/songs/mp3?id=${a.id}`,
       });
     });
 
@@ -206,12 +260,13 @@ showPlaylistElement = (playlist) => {
   console.log('show playlist');
   document.getElementById('playlistContent').innerHTML = '';
   let tr = '';
-  playlist.forEach((s) => {
+  playlist.forEach((s, index) => {
     tr += '<tr>';
     tr += `<td>${s.index}</td>`;
     tr += `<td class="text-left">${s.title}</td>`;
     tr += `<td>
       <a class="fa-solid fa-circle-minus" onclick="removePlaylist(${s.id})"></a>
+      <a class="fa-regular fa-circle-play" onclick="playSelectedMusic(${index})"></a>
     </td>`;
     tr += '</tr>';
   });
@@ -257,6 +312,7 @@ removePlaylist = async (id) => {
 onLogout = (e) => {
   console.log('on logout');
   sessionStorage.removeItem('userSession');
+  document.querySelector('audio').pause();
   window.onload();
 };
 
@@ -270,8 +326,154 @@ removeErrorElement = () => {
 onSearch = async (e) => {
   let title = document.getElementById('txtSearch').value;
   let userSession = sessionStorage.getItem('userSession');
-  let res = await fetch(`${baseUrl}/songs/search?title=${title}&token=${userSession}`).then((res) => res.json());
+  let res = await fetch(
+    `${baseUrl}/songs/search?title=${title}&token=${userSession}`
+  ).then((res) => res.json());
   songs = res;
-  document.getElementById('songHeader').innerHTML=`Results of '${title}'`;
+  document.getElementById('songHeader').innerHTML = `Results of '${title}'`;
   renderSongElement();
 };
+
+// onclick="playMusic()"
+
+var audioIndex = 0;
+function playMusic() {
+  let player = document.querySelector('audio');
+  let startTime = document.getElementById('startTime');
+  let endTime = document.getElementById('endTime');
+  if (currentPlay < playlist.length) {
+    if (player.currentTime > 0) {
+      player.play();
+    } else {
+      player.src = playlist[currentPlay].src;
+      player.play();
+    }
+    document.getElementById('songTitle').innerHTML =
+      playlist[currentPlay].title;
+    document.querySelector(
+      '#footerAudio .fa-regular.fa-circle-play'
+    ).style.display = 'none';
+    document.querySelector('.fa-regular.fa-circle-pause').style.display =
+      'block';
+
+    if (audioIndex == 0) {
+      audioIndex = 1;
+      var elem = document.getElementById('myBar');
+      var width = 1;
+      var id = setInterval(frame, 10);
+
+      function frame() {
+        if (width >= 100) {
+          clearInterval(id);
+          audioIndex = 0;
+          console.log('music end');
+
+          if (musicOption.repeatOne == true) {
+            playMusic();
+          } else if (
+            musicOption.repeatAll == true &&
+            currentPlay == playlist.length - 1
+          ) {
+            currentPlay = 0;
+            playMusic();
+          }
+        } else {
+          const current = player.currentTime;
+          const percent = (current / player.duration) * 100;
+          // width++;
+
+          let s = parseInt(player.currentTime % 60);
+          let m = parseInt((player.currentTime / 60) % 60);
+          let h = parseInt((player.currentTime / 60 / 60) % 60);
+
+          startTime.innerHTML = h + ':' + m + ':' + s;
+
+          let es = parseInt(player.duration % 60);
+          let em = parseInt((player.duration / 60) % 60);
+          let eh = parseInt((player.duration / 60 / 60) % 60);
+
+          endTime.innerHTML = eh + ':' + em + ':' + es;
+          width = percent;
+          elem.style.width = width + '%';
+        }
+      }
+    }
+  }
+}
+
+function playSelectedMusic(selectedIndex) {
+  currentPlay = selectedIndex;
+  document.querySelector('audio').currentTime = 0;
+  playMusic();
+}
+
+function pauseMusic() {
+  let player = document.querySelector('audio');
+  player.pause();
+  document.querySelector('.fa-regular.fa-circle-pause').style.display = 'none';
+  document.querySelector(
+    '#footerAudio .fa-regular.fa-circle-play'
+  ).style.display = 'block';
+}
+
+function nextMusic() {
+  console.log('nextmusic');
+  if (currentPlay >= playlist.length - 1) currentPlay = -1;
+
+  currentPlay = currentPlay + 1;
+  document.querySelector('audio').currentTime = 0;
+  playMusic();
+}
+
+function previousMusic() {
+  console.log('previousmusic');
+  //2,1,0
+  currentPlay = currentPlay - 1;
+  if (currentPlay == -1) currentPlay = playlist.length - 1;
+  document.querySelector('audio').currentTime = 0;
+  playMusic();
+}
+
+async function shuffleMusic() {
+  musicOption.shuffle = !musicOption.shuffle;
+  console.log(musicOption.shuffle);
+  if (musicOption.shuffle == true) {
+    await shufflePlaylist();
+    showPlaylistHeader();
+    musicOption.shuffle = false;
+  }
+}
+
+function repeatAllMusic() {
+  musicOption.repeatAll = !musicOption.repeatAll;
+
+  if (musicOption.repeatAll == false) {
+    document.querySelector('.fa-solid.fa-repeat').style.display = 'none';
+    document.querySelector('.fa-solid.fa-arrow-rotate-right').style.display =
+      'inline-block';
+    musicOption.repeatOne = true;
+  }
+}
+
+function repeatOneMusic() {
+  musicOption.repeatOne = !musicOption.repeatOne;
+
+  if (musicOption.repeatOne == false) {
+    document.querySelector('.fa-solid.fa-repeat').style.display =
+      'inline-block';
+    document.querySelector('.fa-solid.fa-arrow-rotate-right').style.display =
+      'none';
+    musicOption.repeatAll = true;
+  }
+}
+
+function shufflePlaylist() {
+  for (var i = playlist.length - 1; i > 0; i--) {
+    // Generate random number
+    var j = Math.floor(Math.random() * (i + 1));
+
+    var temp = playlist[i];
+    playlist[i] = playlist[j];
+    playlist[j] = temp;
+  }
+}

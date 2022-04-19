@@ -7,80 +7,82 @@ body {
   margin: 0;
 }
 
-.header{
+.header {
   overflow: hidden;
   background-image: url('./images/starfield-2276843.jpg');
   background-repeat: no-repeat;
   background-size: cover;
   color: navajowhite;
   height: 60px;
-
 }
 
-.text-header{
+.text-header {
   font-weight: bolder;
   font-size: x-large;
 }
 
-.logo{
+.logo {
   float: left;
   text-align: center;
   padding: 12px;
   text-decoration: none;
-  color:#fa91d7;
+  color: #fa91d7;
   font-weight: 500;
   font-size: x-large;
- }
+}
 
-.login, #btnLogout{
+.login,
+#btnLogout {
   display: none;
 }
 
-.login, #btnLogout, #search{
+.login,
+#btnLogout,
+#search {
   float: right;
 }
 
-.login > ul{
+.login > ul {
   display: flex;
 }
 
-.login li{
+.login li {
   list-style-type: none;
   padding-left: 5px;
 }
 
-#btnLogout{
+#btnLogout {
   margin-top: 0.19em;
 }
 
-#search{
+#search {
   display: flex;
-  padding:15px;
+  padding: 15px;
   height: 25px;
 }
 
-#search div{
+#search div {
   display: inherit;
   margin-right: 40px;
 }
 
-#search label{
+#search label {
   margin-right: 3px;
 }
-#search a{
+#search a {
   padding: 5px;
 }
 
-.content{
-  width: 800px;
+.content {
+  width: 700px;
   margin: auto;
 }
 
-.error{
+.error {
   color: red;
 }
 
-table{
+table {
   width: 700px;
   border-spacing: 0;
   border-collapse: collapse;
@@ -88,27 +90,72 @@ table{
   margin-bottom: 15px;
 }
 
-th{
+th {
   background-color: #ddd;
 }
-td,th {
+td,
+th {
   border: 1px solid #ddd;
-  
+
   padding: 2px;
 }
 
-td{
+td {
   text-align: center;
 }
 
-.text-left{
-  text-align: left !important; 
- }
+.text-left {
+  text-align: left !important;
+}
 
-.left{
+.left {
   float: left;
 }
 
-.right{
+.right {
   float: right;
+}
+
+.footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  /* background-color: rgb(131, 145, 145); */
+  /* color: black; */
+  background-color: white;
+  text-align: center;
+  height: 80px;
+}
+
+#footerAudio {
+  width: 750px;
+  margin: auto;
+  text-align: center;
+  padding-top: 20px;
+}
+#footerAudio ul {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0px;
+}
+
+#footerAudio li {
+  list-style-type: none;
+  padding-left: 5px;
+}
+
+#myProgress {
+  /* width: 100%; */
+  width:300px;
+  background-color: #ddd;
+  border-radius: 35px;
+}
+
+#myBar {
+  width: 1%;
+  height: 10px;
+  background-color: #04aa6d;
+  border-radius: 35px;
 }

@@ -3,8 +3,8 @@ const Song = require('../models/song');
 
 exports.getAll = async (req, res, next) => {
   const playlist = await Playlist.getAll(req.query.username);
-  console.log(req.query.username);
-  console.log("getallplaylist",playlist[0]);
+  // console.log(req.query.username);
+  // console.log("getallplaylist",playlist[0]);
   if (playlist[0]) {
     const songs = await Song.getUserPLaylist(playlist[0].list);
     console.log("getall song",songs);
@@ -22,7 +22,7 @@ exports.add = async (req, res, next) => {
 };
 
 exports.remove = (req, res, next) => {
-  console.log('remove', req.body);
+  // console.log('remove', req.body);
   Playlist.remove(req.body.username, req.body.songId);
   res.status(200).send('success');
 };

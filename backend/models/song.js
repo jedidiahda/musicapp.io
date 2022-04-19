@@ -4,42 +4,36 @@ let songs = [
     title: 'Save your tears',
     artist: 'The Weeknd',
     releaseDate: new Date(2021, 3, 21), //APR 22 2021
-    timeSpan: '04:09',
   },
   {
     id: 2,
     title: 'Peaches',
     artist: 'Justin Bieber ft. Daniel Caesar, Giveon',
     releaseDate: new Date(2021, 2, 18), //March 19 2021
-    timeSpan: '03:18',
   },
   {
     id: 3,
     title: 'Out of Time',
     artist: 'The Weeknd',
     releaseDate: new Date(2021, 2, 18), //March 19 2021
-    timeSpan: '03:18',
   },
   {
     id: 4,
     title: 'Close',
     artist: 'Nick Jonas ft. Tove Lo',
     releaseDate: new Date(2021, 2, 18), //March 19 2021
-    timeSpan: '03:18',
   },
   {
     id: 5,
     title: 'Bad Things',
     artist: 'Camila Cabello',
     releaseDate: new Date(2021, 2, 18), //March 19 2021
-    timeSpan: '03:18',
   },
   {
     id: 6,
     title: 'Kill Em With Kindness',
     artist: 'Selena Gomez',
     releaseDate: new Date(2021, 2, 18), //March 19 2021
-    timeSpan: '03:18',
   },
 ];
 
@@ -49,7 +43,7 @@ class Song {
   }
 
   static getUserPLaylist(playlist){
-    console.log('playlist song', playlist)
+    // console.log('playlist song', playlist)
     let list = [];
     for(let i= 0; i < songs.length;i++){
       for(let j=0;j<playlist.length;j++){

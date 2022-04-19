@@ -6,10 +6,10 @@
       src="https://kit.fontawesome.com/03c23d7333.js"
       crossorigin="anonymous"
     ></script>
+
     <link rel="stylesheet" href="./resources/style.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.3/moment.min.js"></script>
     <script src="./resources/main.js"></script>
-
   </head>
   <body class="wrapper">
     <!--header-->
@@ -45,7 +45,6 @@
 
         <button id="btnLogout">Logout</button>
       </div>
-      
     </div>
     <!--content-->
 
@@ -55,20 +54,59 @@
       </div>
       <div id="song-content">
         <div class="songs">
-          <label id="songHeader" class="text-header">Songs you may interest</label>
-          <div id="songContent">
-  
-          </div>
+          <label id="songHeader" class="text-header"
+            >Songs you may interest</label
+          >
+          <div id="songContent"></div>
         </div>
         <div id="playlist" class="playlist">
           <label id="playlist-header" class="text-header"></label>
-          <div id="playlistContent">
-  
-          </div>
+          <div id="playlistContent"></div>
         </div>
       </div>
     </div>
 
-    <input type="hidden" id="hhUsername"/>
+    <!--audio footer-->
+    <div class="footer">
+      
+      <div id="footerAudio">
+        <label id="songTitle">&nbsp;</label>
+        <ul>
+          <li>
+            <i class="fa-regular fa-circle-left"></i>
+          </li>
+          <li>
+            <i class="fa-regular fa-circle-play"></i>
+            <i class="fa-regular fa-circle-pause"></i>
+          </li>
+          <li>
+            <i class="fa-regular fa-circle-right"></i>
+          </li>
+          <li>
+            
+            <div id="myProgress">
+              <div id="myBar"></div>
+            </div>
+          </li>
+          <li>
+            <label id="startTime"></label>/
+            <label id="endTime"></label>
+          </li>
+          <li class="player">
+            <audio controls hidden>
+              <!-- <source src="./audio/1.mp3" type="audio/mpeg"> -->
+            </audio>
+          </li>
+          <li>
+            <i class="fa-solid fa-shuffle"></i>
+            <i class="fa-solid fa-repeat"></i>
+            <!--repeat 1-->
+            <i class="fa-solid fa-arrow-rotate-right"></i>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <input type="hidden" id="hhUsername" />
   </body>
 </html>

@@ -6,5 +6,6 @@ const route = express.Router();
 
 route.get('/songs',currentUser, songController.getAll);
 route.get('/songs/search',currentUser, songController.search);
+route.get('/songs/mp3',songController.getMp3);
 
 module.exports = route;
