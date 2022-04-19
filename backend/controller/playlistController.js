@@ -7,7 +7,7 @@ exports.getAll = async (req, res, next) => {
   // console.log("getallplaylist",playlist[0]);
   if (playlist[0]) {
     const songs = await Song.getUserPLaylist(playlist[0].list);
-    console.log("getall song",songs);
+    // console.log("getall song",songs);
     res.status(200).json(songs);
   }else{
     res.status(200).json([]);

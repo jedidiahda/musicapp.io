@@ -5,6 +5,7 @@ body {
   font-style: normal;
   text-shadow: none;
   margin: 0;
+  background: #eedef05c;
 }
 
 .header {
@@ -75,6 +76,7 @@ body {
 
 .content {
   width: 700px;
+  height: 800px;
   margin: auto;
 }
 
@@ -126,13 +128,16 @@ td {
   background-color: white;
   text-align: center;
   height: 80px;
+  background-color: #e4a4cd;
+  box-shadow: 0px 0px 5px #e44848;
 }
 
 #footerAudio {
-  width: 750px;
+  width: 100%;
   margin: auto;
   text-align: center;
   padding-top: 20px;
+  
 }
 #footerAudio ul {
   display: flex;

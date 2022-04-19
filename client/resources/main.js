@@ -213,7 +213,7 @@ async function addPlaylist(id) {
     index: index++,
     id: newPlaylist.id,
     title: newPlaylist.title,
-    src: `http://localhost:3000/songs/mp3?id=${newPlaylist.id}`,
+    src: `http://localhost:3000/songs/mp3?id=${newPlaylist.id}&token=${sessionStorage.getItem('userSession')}`,
   });
 
   showPlaylistHeader();
@@ -236,7 +236,7 @@ getPlaylist = async () => {
         id: a.id,
         title: a.title,
         // src: `./audio/${a.id}.mp3`,
-        src: `http://localhost:3000/songs/mp3?id=${a.id}`,
+        src: `http://localhost:3000/songs/mp3?id=${a.id}&token=${sessionStorage.getItem('userSession')}`,
       });
     });
 
