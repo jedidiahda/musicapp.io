@@ -33,7 +33,8 @@ window.onload = function () {
   const btnPause = document.querySelector('.fa-regular.fa-circle-pause');
   btnPause.style.display = 'none';
   document.querySelector('audio').currentTime = 0;
-  document.querySelector('.fa-solid.fa-arrow-rotate-right').style.display ='none';
+  document.querySelector('.fa-solid.fa-arrow-rotate-right').style.display =
+    'none';
 
   clearHTMLContent();
   footer.style.visibility = 'hidden';
@@ -57,13 +58,15 @@ window.onload = function () {
   document.getElementById('btnLogin').onclick = onLogin;
   btnLogout.onclick = onLogout;
   document.getElementById('btnSearch').onclick = onSearch;
-  document.querySelector('#footerAudio .fa-regular.fa-circle-play').onclick = playMusic;
+  document.querySelector('#footerAudio .fa-regular.fa-circle-play').onclick =
+    playMusic;
   btnPause.onclick = pauseMusic;
   document.querySelector('.fa-regular.fa-circle-right').onclick = nextMusic;
   document.querySelector('.fa-regular.fa-circle-left').onclick = previousMusic;
   document.querySelector('.fa-solid.fa-shuffle').onclick = shuffleMusic;
   document.querySelector('.fa-solid.fa-repeat').onclick = repeatAllMusic;
-  document.querySelector('.fa-solid.fa-arrow-rotate-right').onclick = repeatOneMusic;
+  document.querySelector('.fa-solid.fa-arrow-rotate-right').onclick =
+    repeatOneMusic;
 
   //fix audio duration inifite
   //https://www.thecodehubs.com/infinity-audio-video-duration-issue-fixed-using-javascript/
@@ -333,18 +336,12 @@ onSearch = async (e) => {
   renderSongElement();
 };
 
-
 function playMusic() {
   let player = document.querySelector('audio');
   let startTime = document.getElementById('startTime');
   let endTime = document.getElementById('endTime');
 
   document.querySelector('.footer').style.visibility = 'visible';
-
-  //exit interval if duration is NaN
-  if(isNaN(player.duration)){
-    return;
-  } 
 
   if (currentPlay < playlist.length) {
     if (player.currentTime > 0) {
@@ -353,12 +350,13 @@ function playMusic() {
       player.src = playlist[currentPlay].src;
       player.play();
     }
-    
-    document.getElementById('songTitle').innerHTML = playlist[currentPlay].title;
+    document.getElementById('songTitle').innerHTML =
+      playlist[currentPlay].title;
     document.querySelector(
       '#footerAudio .fa-regular.fa-circle-play'
     ).style.display = 'none';
-    document.querySelector('.fa-regular.fa-circle-pause').style.display = 'block';
+    document.querySelector('.fa-regular.fa-circle-pause').style.display =
+      'block';
 
     if (audioIndex == 0) {
       audioIndex = 1;
@@ -390,13 +388,13 @@ function playMusic() {
           let m = parseInt((player.currentTime / 60) % 60);
           let h = parseInt((player.currentTime / 60 / 60) % 60);
 
-          startTime.innerHTML = h + ':' + m + ':' + s;
+          startTime.innerHTML = current <= 0 ? '00:00:00' : (h + ':' + m + ':' + s) ;
 
           let es = Math.floor(player.duration % 60);
           let em = parseInt((player.duration / 60) % 60);
           let eh = parseInt((player.duration / 60 / 60) % 60);
 
-          endTime.innerHTML = eh + ':' + em + ':' + es;
+          endTime.innerHTML = es > -1?  eh + ':' + em + ':' + es : '00:00:00';
           width = percent;
           elem.style.width = width + '%';
         }
@@ -409,7 +407,7 @@ playSelectedMusic = (selectedIndex) => {
   currentPlay = selectedIndex;
   document.querySelector('audio').currentTime = 0;
   playMusic();
-}
+};
 
 function pauseMusic() {
   let player = document.querySelector('audio');
